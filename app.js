@@ -7,6 +7,7 @@ let currentQuestion = 0;
 
 
 let child = {};
+vkBridge.send("VKWebAppInit");
 
 
 
@@ -405,10 +406,15 @@ JSON.stringify(child)
 
 
 
-.then(
-response=>response.json()
-)
+.then(async response=>{
 
+    const text = await response.text();
+
+    console.log("API RESPONSE:", text);
+
+    return JSON.parse(text);
+
+})
 
 
 .then(data=>{
@@ -462,7 +468,7 @@ document.getElementById("app").innerHTML = `
 
 
 <h2>
-🏆 Результат
+🏆 Результа
 </h2>
 
 
