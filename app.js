@@ -3,6 +3,23 @@
 // =====================================================
 
 
+// запуск VK Mini App
+
+if (window.vkBridge) {
+
+    vkBridge.send("VKWebAppInit")
+    .then(() => {
+
+        console.log("VK Mini App запущен");
+
+    })
+    .catch(error => {
+
+        console.log(error);
+
+    });
+
+}
 let currentQuestion = 0;
 
 
