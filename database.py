@@ -1,117 +1,338 @@
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
+
+"""
+database.py V8.4 FINAL
+База данных VK Sport Selector AI Bot
+"""
 
 import sqlite3
-import json
-import os
 
 
-DB = "sport_ai.db"
+DB_NAME = "sport_selector.db"
 
 
-conn = sqlite3.connect(
-    DB,
-    check_same_thread=False
-)
+# =====================================================
+# Подключение к БД
+# =====================================================
 
-
-cursor = conn.cursor()
+def get_connection():
+    return sqlite3.connect(DB_NAME)
 
 
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS users
-(
-id INTEGER PRIMARY KEY,
+# =====================================================
+# Нормализация ID пользователя
+# =====================================================
 
-step INTEGER DEFAULT 0,
+def normalize_user_id(user):
 
-data TEXT
+    if isinstance(user, dict):
 
-)
-""")
+        return (
+            user.get("user_id")
+            or user.get("id")
+            or user.get("vk_id")
+        )
+
+    return user
 
 
-conn.commit()
+
+# =====================================================
+# Создание таблицы
+# =====================================================
+
+def init_db():
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+
+        user_id INTEGER PRIMARY KEY,
+
+        age TEXT DEFAULT '',
+        gender TEXT DEFAULT '',
+
+        height TEXT DEFAULT '',
+        weight TEXT DEFAULT '',
+
+        activity TEXT DEFAULT '',
+
+        speed TEXT DEFAULT '',
+        strength TEXT DEFAULT '',
+        coordination TEXT DEFAULT '',
+        endurance TEXT DEFAULT '',
+        flexibility TEXT DEFAULT '',
+        competition TEXT DEFAULT '',
+        contact TEXT DEFAULT '',
+
+        step INTEGER DEFAULT 0
+
+    )
+    """)
+
+
+    conn.commit()
+    conn.close()
 
 
 
-def get_user(user_id):
+# =====================================================
+# Создать пользователя
+# =====================================================
+
+def create_user(user_id):
+
+    user_id = normalize_user_id(user_id)
+
+    if user_id is None:
+        return
+
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
 
     cursor.execute(
         """
-        SELECT step,data
-        FROM users
-        WHERE id=?
+        INSERT OR IGNORE INTO users(user_id)
+        VALUES(?)
         """,
-        (user_id,)
+        (
+            int(user_id),
+        )
     )
+
+
+    conn.commit()
+    conn.close()
+
+
+
+# =====================================================
+# Сохранить ответ
+# =====================================================
+
+def save_user(user_id, field, value):
+
+    user_id = normalize_user_id(user_id)
+
+
+    if user_id is None:
+        return
+
+
+    create_user(user_id)
+
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+
+    cursor.execute(
+        f"""
+        UPDATE users
+        SET {field}=?
+        WHERE user_id=?
+        """,
+        (
+            str(value),
+            int(user_id)
+        )
+    )
+
+
+    conn.commit()
+    conn.close()
+
+
+
+# =====================================================
+# Совместимость
+# =====================================================
+
+def update_user(user_id, field, value):
+
+    save_user(
+        user_id,
+        field,
+        value
+    )
+
+
+
+# =====================================================
+# Получить данные пользователя
+# =====================================================
+
+def get_user(user_id, field=None):
+
+    user_id = normalize_user_id(user_id)
+
+
+    if user_id is None:
+        return None
+
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM users
+        WHERE user_id=?
+        """,
+        (
+            int(user_id),
+        )
+    )
+
 
     row = cursor.fetchone()
 
 
-    if not row:
+    conn.close()
 
+
+    if row is None:
         return None
 
 
-    return {
 
-        "step": row[0],
+    columns = [
 
-        "data":
-        json.loads(row[1])
+        "user_id",
 
-    }
+        "age",
+        "gender",
 
+        "height",
+        "weight",
 
+        "activity",
 
-def create_user(user_id):
+        "speed",
+        "strength",
+        "coordination",
+        "endurance",
+        "flexibility",
+        "competition",
+        "contact",
 
-    cursor.execute(
-        """
-        INSERT OR REPLACE INTO users
-        VALUES
-        (
-        ?,
-        0,
-        '{}'
-        )
-        """,
-        (user_id,)
-    )
+        "step"
+    ]
 
 
-    conn.commit()
-
-
-
-def save_user(
-        user_id,
-        step,
-        data
-):
-
-    cursor.execute(
-        """
-        INSERT OR REPLACE INTO users
-        VALUES
-        (?,?,?)
-        """,
-        (
-            user_id,
-            step,
-            json.dumps(
-                data,
-                ensure_ascii=False
-            )
+    data = dict(
+        zip(
+            columns,
+            row
         )
     )
 
 
-    conn.commit()
+    if field:
+
+        return data.get(field)
+
+
+    return data
 
 
 
-def reset_user(user_id):
+# =====================================================
+# Шаг теста
+# =====================================================
+
+def get_step(user_id):
+
+    data = get_user(user_id)
+
+
+    if not data:
+        return 0
+
+
+    return data.get(
+        "step",
+        0
+    )
+
+
+
+def set_step(user_id, step):
+
+    user_id = normalize_user_id(user_id)
+
 
     create_user(user_id)
+
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+
+    cursor.execute(
+        """
+        UPDATE users
+        SET step=?
+        WHERE user_id=?
+        """,
+        (
+            int(step),
+            int(user_id)
+        )
+    )
+
+
+    conn.commit()
+    conn.close()
+
+
+
+# =====================================================
+# Очистка пользователя
+# =====================================================
+
+def clear_user(user_id):
+
+    user_id = normalize_user_id(user_id)
+
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+
+    cursor.execute(
+        """
+        DELETE FROM users
+        WHERE user_id=?
+        """,
+        (
+            int(user_id),
+        )
+    )
+
+
+    conn.commit()
+    conn.close()
+
+
+
+# Старое имя
+def reset_user(user_id):
+
+    clear_user(user_id)
+
+
+
+# =====================================================
+# Старт базы
+# =====================================================
+
+init_db()

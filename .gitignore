@@ -1,13 +1,20 @@
+# Виртуальное окружение
+.venv/
+
+# Переменные окружения
 .env
 
-__pycache__/
+# Базы данных
+*.db
+*.sqlite
 
+# Кэш Python
+__pycache__/
 *.pyc
 
-users.db
+# Логи
+*.log
 
-users.json
-
-.vscode/
-
-.idea/
+# Системные файлы Windows
+Thumbs.db
+desktop.ini

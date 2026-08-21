@@ -1,0 +1,23 @@
+{
+  "3391707": {
+    "state": "question",
+    "answers": {},
+    "question_index": 0,
+    "last_result": [
+      {
+        "sport": "Спортивная акробатика",
+        "percent": 92,
+        "score": 86.0,
+        "mode": "development",
+        "anthropometry": "среднее телосложение"
+      },
+      {
+        "sport": "Прыжки на батуте",
+        "percent": 90,
+        "score": 81.7,
+        "mode": "development",
+        "anthropometry": "среднее телосложение"
+      }
+    ]
+  }
+}
