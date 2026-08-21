@@ -11,6 +11,8 @@
 
 <link rel="stylesheet" href="style.css">
 
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+
 </head>
 
 
@@ -26,34 +28,48 @@
 
 
 <p class="subtitle">
-
-AI-подбор вида спорта
+AI-подбор вида спорта<br>
 для вашего ребенка
-
 </p>
-
 
 
 <div id="app">
 
-
 <button onclick="startTest()">
-
 Начать подбор спорта
-
 </button>
 
+</div>
+
 
 </div>
 
 
 
-</div>
+<script>
 
+if (window.vkBridge) {
 
+    vkBridge.send("VKWebAppInit")
+        .then(() => {
 
-<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+            console.log("VK Mini App initialized");
+
+        })
+        .catch((error) => {
+
+            console.log("VK Bridge error:", error);
+
+        });
+
+}
+
+</script>
+
 
 <script src="app.js"></script>
 
+
 </body>
+
+</html>
