@@ -10,7 +10,7 @@ let child = {};
 
 
 
-const API_URL = "https://sport-selector-ai-agent2.onrender.com";
+const API_URL = "https://sport-selector-ai-agent2.onrender.com/recommend";
 
 
 
