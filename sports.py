@@ -1,172 +1,72 @@
+# -*- coding: utf-8 -*-
+
 SPORTS = {
-    "boxing": {
-        "name": "Бокс",
-        "age_min": 7,
-        "age_max": 18,
-        "qualities": {
-            "speed": 5,
-            "strength": 4,
-            "coordination": 4,
-            "endurance": 4,
-            "flexibility": 2,
-        },
-        "preferences": {
-            "competition": 5,
-            "contact": 5,
-            "individual": 5,
-            "team": 1,
-        },
+    "Спортивная акробатика": {
+        "emoji": "🤸",
+        "min_age": 5,
+        "max_age": 18,
     },
 
-    "wrestling": {
-        "name": "Вольная борьба",
-        "age_min": 7,
-        "age_max": 18,
-        "qualities": {
-            "speed": 4,
-            "strength": 5,
-            "coordination": 5,
-            "endurance": 5,
-            "flexibility": 4,
-        },
-        "preferences": {
-            "competition": 5,
-            "contact": 5,
-            "individual": 5,
-            "team": 1,
-        },
+    "Прыжки на батуте": {
+        "emoji": "🤸",
+        "min_age": 5,
+        "max_age": 18,
     },
 
-    "judo": {
-        "name": "Дзюдо",
-        "age_min": 6,
-        "age_max": 18,
-        "qualities": {
-            "speed": 4,
-            "strength": 4,
-            "coordination": 5,
-            "endurance": 4,
-            "flexibility": 4,
-        },
-        "preferences": {
-            "competition": 5,
-            "contact": 5,
-            "individual": 5,
-            "team": 1,
-        },
+    "Бокс": {
+        "emoji": "🥊",
+        "min_age": 8,
+        "max_age": 18,
     },
 
-    "sambo": {
-        "name": "Самбо",
-        "age_min": 7,
-        "age_max": 18,
-        "qualities": {
-            "speed": 4,
-            "strength": 5,
-            "coordination": 5,
-            "endurance": 4,
-            "flexibility": 4,
-        },
-        "preferences": {
-            "competition": 5,
-            "contact": 5,
-            "individual": 5,
-            "team": 1,
-        },
+    "Дзюдо": {
+        "emoji": "🥋",
+        "min_age": 6,
+        "max_age": 18,
     },
 
-    "mma": {
-        "name": "ММА",
-        "age_min": 10,
-        "age_max": 18,
-        "qualities": {
-            "speed": 5,
-            "strength": 5,
-            "coordination": 5,
-            "endurance": 5,
-            "flexibility": 4,
-        },
-        "preferences": {
-            "competition": 5,
-            "contact": 5,
-            "individual": 5,
-            "team": 1,
-        },
+    "Самбо": {
+        "emoji": "🥋",
+        "min_age": 7,
+        "max_age": 18,
     },
 
-    "archery": {
-        "name": "Стрельба из лука",
-        "age_min": 7,
-        "age_max": 18,
-        "qualities": {
-            "speed": 2,
-            "strength": 3,
-            "coordination": 5,
-            "endurance": 3,
-            "flexibility": 3,
-        },
-        "preferences": {
-            "competition": 4,
-            "contact": 1,
-            "individual": 5,
-            "team": 2,
-        },
+    "Вольная борьба": {
+        "emoji": "🤼",
+        "min_age": 7,
+        "max_age": 18,
     },
 
-    "acrobatics": {
-        "name": "Спортивная акробатика",
-        "age_min": 5,
-        "age_max": 16,
-        "qualities": {
-            "speed": 4,
-            "strength": 4,
-            "coordination": 5,
-            "endurance": 3,
-            "flexibility": 5,
-        },
-        "preferences": {
-            "competition": 4,
-            "contact": 1,
-            "individual": 3,
-            "team": 5,
-        },
+    "Стрельба из лука": {
+        "emoji": "🏹",
+        "min_age": 8,
+        "max_age": 18,
     },
 
-    "trampoline": {
-        "name": "Прыжки на батуте",
-        "age_min": 5,
-        "age_max": 16,
-        "qualities": {
-            "speed": 4,
-            "strength": 3,
-            "coordination": 5,
-            "endurance": 3,
-            "flexibility": 4,
-        },
-        "preferences": {
-            "competition": 4,
-            "contact": 1,
-            "individual": 5,
-            "team": 1,
-        },
+    "Тяжёлая атлетика": {
+        "emoji": "🏋️",
+        "min_age": 10,
+        "max_age": 18,
     },
 
-    "weightlifting": {
-        "name": "Тяжёлая атлетика",
-        "age_min": 10,
-        "age_max": 18,
-        "qualities": {
-            "speed": 3,
-            "strength": 5,
-            "coordination": 5,
-            "endurance": 3,
-            "flexibility": 3,
-        },
-        "preferences": {
-            "competition": 5,
-            "contact": 1,
-            "individual": 5,
-            "team": 1,
-        },
+    "ММА": {
+        "emoji": "🥊",
+        "min_age": 10,
+        "max_age": 18,
     },
 }
+
+
+def get_available_sports(age):
+    """
+    Возвращает виды спорта, допустимые для указанного возраста
+    согласно возрастным ограничениям, заданным для проекта.
+    """
+
+    result = []
+
+    for sport, data in SPORTS.items():
+        if data["min_age"] <= age <= data["max_age"]:
+            result.append(sport)
+
+    return result

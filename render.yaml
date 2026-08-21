@@ -1,0 +1,22 @@
+services:
+
+  - type: web
+
+    name: sport-selector-ai-vk
+
+    env: python
+
+    buildCommand: pip install -r requirements.txt
+
+    startCommand: uvicorn vk_bot:app --host 0.0.0.0 --port 10000
+
+    envVars:
+
+      - key: VK_TOKEN
+        sync: false
+
+      - key: VK_GROUP_ID
+        sync: false
+
+      - key: CALLBACK_SECRET
+        sync: false

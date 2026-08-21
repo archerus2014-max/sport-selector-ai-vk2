@@ -1,52 +1,225 @@
-from sports import SPORTS
+# -*- coding: utf-8 -*-
+
+"""
+Sport Selector AI VK
+ENGINE V9 CLOUD
+
+Алгоритм подбора спорта
+"""
 
 
-def score_sport(profile, sport):
-    score = 0
-    max_score = 0
+SPORTS = {
 
-    # Физические качества
-    for quality, value in profile["qualities"].items():
-        sport_value = sport["qualities"].get(quality, 0)
-
-        score += min(value, sport_value)
-        max_score += 5
-
-    # Предпочтения
-    for preference, value in profile["preferences"].items():
-        sport_value = sport["preferences"].get(preference, 0)
-
-        score += min(value, sport_value)
-        max_score += 5
-
-    # Возраст
-    age = profile["age"]
-
-    if sport["age_min"] <= age <= sport["age_max"]:
-        score += 10
-        max_score += 10
-    else:
-        max_score += 10
-
-    return round(score / max_score * 100)
+    "Спортивная акробатика": {
+        "skills": {
+            "coordination": 5,
+            "flexibility": 5,
+            "balance": 5,
+            "activity": 4
+        }
+    },
 
 
-def recommend(profile):
-    results = []
+    "Прыжки на батуте": {
+        "skills": {
+            "coordination": 5,
+            "speed": 5,
+            "balance": 5,
+            "activity": 4
+        }
+    },
 
-    for sport_id, sport in SPORTS.items():
 
-        score = score_sport(profile, sport)
+    "Дзюдо": {
+        "skills": {
+            "coordination": 5,
+            "balance": 5,
+            "discipline": 5,
+            "competition": 4
+        }
+    },
 
-        results.append({
-            "id": sport_id,
-            "name": sport["name"],
-            "score": score,
-        })
 
-    results.sort(
-        key=lambda item: item["score"],
+    "Самбо": {
+        "skills": {
+            "strength": 5,
+            "competition": 5,
+            "contact": 5,
+            "discipline": 4
+        }
+    },
+
+
+    "Вольная борьба": {
+        "skills": {
+            "strength": 5,
+            "endurance": 5,
+            "contact": 5
+        }
+    },
+
+
+    "Бокс": {
+        "skills": {
+            "speed": 5,
+            "strength": 4,
+            "reaction": 5,
+            "discipline": 5
+        }
+    },
+
+
+    "ММА": {
+        "skills": {
+            "strength": 5,
+            "speed": 5,
+            "contact": 5
+        }
+    },
+
+
+    "Стрельба из лука": {
+        "skills": {
+            "discipline": 5,
+            "focus": 5,
+            "stability": 5
+        }
+    },
+
+
+    "Тяжёлая атлетика": {
+        "skills": {
+            "strength": 5,
+            "discipline": 5,
+            "power": 5
+        }
+    }
+
+}
+
+
+
+def calculate_age_bonus(age, sport):
+
+    age = int(age)
+
+
+    if age <= 6:
+
+        if sport in [
+            "Спортивная акробатика",
+            "Прыжки на батуте"
+        ]:
+            return 20
+
+        return -20
+
+
+
+    if age <=10:
+
+        if sport in [
+            "Дзюдо",
+            "Самбо",
+            "Акробатика",
+            "Прыжки на батуте"
+        ]:
+            return 10
+
+
+
+    return 0
+
+
+
+
+def recommend(data):
+
+
+    age = data.get(
+        "age",
+        7
+    )
+
+
+    answers = data.get(
+        "answers",
+        {}
+    )
+
+
+
+    result=[]
+
+
+
+    for sport,info in SPORTS.items():
+
+
+        score=0
+        count=0
+
+
+        for skill,value in info["skills"].items():
+
+
+            child_value = int(
+                answers.get(
+                    skill,
+                    3
+                )
+            )
+
+
+            score += (
+                10 -
+                abs(
+                    value-child_value
+                )
+            )
+
+
+            count+=1
+
+
+
+        percent = (
+            score / count
+        ) * 10
+
+
+
+        percent += calculate_age_bonus(
+            age,
+            sport
+        )
+
+
+        percent = int(
+            max(
+                55,
+                min(
+                    95,
+                    percent
+                )
+            )
+        )
+
+
+
+        result.append(
+            {
+                "sport":sport,
+                "percent":percent
+            }
+        )
+
+
+
+    result.sort(
+        key=lambda x:x["percent"],
         reverse=True
     )
 
-    return results[:5]
+
+    return result[:5]

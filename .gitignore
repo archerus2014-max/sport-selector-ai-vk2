@@ -1,4 +1,13 @@
-.venv/
 .env
+
 __pycache__/
+
 *.pyc
+
+users.db
+
+users.json
+
+.vscode/
+
+.idea/
